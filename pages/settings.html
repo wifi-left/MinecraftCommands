@@ -24,43 +24,39 @@
     背景颜色（支持rgba）：
 </p>
 <style>
-    
+
 </style>
 <input class="input" id="inputcolor" oninput="colorchange(this)" />
-
-
-
-
-
 <script>
-    document.getElementById("isdark").addEventListener("change",function () {
+    document.getElementById("isdark").addEventListener("change", function () {
         csschange(document.getElementById("isdark"));
     });
     function BGChange(objS) {
-        $.cookie.remove("img", { path: '' });
+        // localStorage.setItem("img", { path: '' });
         var tochange = objS.options[objS.selectedIndex].value;
-        $.cookie.set("img", tochange, {expires: 365, path: '/' });
+        localStorage.setItem("img", tochange);
         //Cookies.remove('name')
-        console.log(tochange, $.cookie.get("img"));
-        co_img=tochange;
+        // console.log(tochange, $.cookie.get("img"));
+        co_img = tochange;
         reloadBG();
     }
-    function csschange(objS){
-        $.cookie.remove("dark");
-        var tochange =objS.options[objS.selectedIndex].value;
-        tochange=tochange.toString().replaceAll("\n","");
-        $.cookie.set("dark", tochange,{ expires: 365, path: '/' });
-        isdark=tochange;
+    function csschange(objS) {
+        // $.cookie.remove("dark");
+        var tochange = objS.options[objS.selectedIndex].value;
+        tochange = tochange.toString().replaceAll("\n", "");
+        localStorage.setItem("dark", tochange);
+        // console.log(tochange);
+        isdark = tochange;
         reloadBG();
     }
-    function colorchange(ss){
-        $.cookie.remove("color");
+    function colorchange(ss) {
+        // $.cookie.remove("color");
         var tochange = ss.value;
-        $.cookie.set("color", tochange,{ expires: 365, path: '/' });
-        co_color=tochange;
+        localStorage.setItem("color", tochange);
+        co_color = tochange;
         reloadBG();
     }
-    document.getElementById("selBgImg").addEventListener("change",function () {
+    document.getElementById("selBgImg").addEventListener("change", function () {
         BGChange(document.getElementById("selBgImg"));
     });
     // function BGChange(objS) {
@@ -73,30 +69,11 @@
     var nbg = co_img;
     try {
         //Background Images
-        fetch('bgimg/imgs.menu').then(res => {
-            if (res.ok) {
-                return res.text();
-            }
-            throw new Error('Network response was not ok.');
-        }).catch(err => {
-            throw new Error(err);
-        }).then(data => {
-            var tmp = "<option value='null'>(不选择图片)</option>";
-            
-            var lists = data.toString().split("\r\n");
-            for (var i = 0; i < lists.length; i++) {
 
-                var url = "";
-                var b = lists[i].split("~|~");
-                if (b.length >= 2) {
-                    if (nbg === b[1]) tmp = tmp + "<option value='" + b[1] + "' selected='selected'>" + b[0] + "</option>";
-                    else tmp = tmp + "<option value='" + b[1] + "'>" + b[0] + "</option>";
-                }
-            }
-            $("#selBgImg").html(tmp);
-        });
+        var tmp = "<option value='null'>(不选择图片)</option>";
+        $("#selBgImg").html(tmp);
         //CSS Looking
-        fetch('looking.menu').then(res => {
+        fetch('./looking.menu').then(res => {
             if (res.ok) {
                 return res.text();
             }
@@ -105,19 +82,20 @@
             throw new Error(err);
         }).then(data => {
             var tmp = "";
-            
-            var lists = data.toString().split("\r\n");
+            // console.log(data)
+            var lists = data.toString().replaceAll("\r", "").split("\n");
+            // console.log(lists)
             for (var i = 0; i < lists.length; i++) {
 
                 var url = "";
                 var b = lists[i].split("~|~");
                 if (b.length >= 2) {
                     //console.log(isdark,b[1],isdark== b[1]);
-                    if (isdark== b[1]) tmp = tmp + "<option value='" + b[1] + "' selected='selected'>" + b[0] + "</option>";
+                    if (isdark == b[1]) tmp = tmp + "<option value='" + b[1] + "' selected='selected'>" + b[0] + "</option>";
                     else tmp = tmp + "<option value='" + b[1] + "'>" + b[0] + "</option>";
                 }
             }
-            if(tmp==""){
+            if (tmp == "") {
                 showError("Error: 出现错误！<br/>无法获取列表！");
             }
             $("#isdark").html(tmp);
@@ -126,7 +104,7 @@
         showError("Error: 出现错误！<br/>" + e);
         console.log("Error:" + e);
     }
-    if(co_color==undefined) document.getElementById("inputcolor").value="rgba(255,255,255,0.5)";
-    else document.getElementById("inputcolor").value=co_color;
+    if (co_color == undefined) document.getElementById("inputcolor").value = "rgba(255,255,255,0.5)";
+    else document.getElementById("inputcolor").value = co_color;
 
 </script>

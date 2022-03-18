@@ -492,7 +492,7 @@
         }
         return request.QueryString(param);
     }
-    $.cookie.raw = true;
+    // $.cookie.raw = true;
     let WebsiteName = "GA Wiki";
 
     let searchInputGA = document.getElementById("searchInput");
@@ -524,6 +524,7 @@
         nowapage = nowapage.substr(0, nowapage.length - 5);
         ishtml = true;
     }
+    if(nowapage==null || nowapage=='') nowapage = "index";
 
     var menuJson = "";
     var NowMenu = "";
@@ -679,9 +680,9 @@
 
         hidemsg(document.getElementById("cw3jkwej"));
     };
-    var co_img = gQuery.cookie.get("img");
-    var co_color = gQuery.cookie.get("color");
-    var isdark = gQuery.cookie.get("dark");
+    var co_img = localStorage.getItem("img");
+    var co_color = localStorage.getItem("color");
+    var isdark = localStorage.getItem("dark");
 
     // function showloading() {
     //     gQuery("#loadingPage").fadeIn(50);
@@ -712,11 +713,13 @@
     var converter = new showdown.Converter();
     function reloadContent() {
         try {
+            if(nowapage==null || nowapage=='') nowapage = "index";
             fetch('./pages/' + nowapage + "" + (ishtml ? ".html" : ".md")).then(res => {
                 if (res.ok) {
                     return res.text();
                 }
-                showError("Error: 出现错误！<br/>" + 'Network response was not ok.');
+                // showError("Error: 出现错误！<br/>" + 'Network response was not ok.');
+                showCo("<h1>无法找到该页面。或该页面出错。</h1>");
             }).catch(err => {
                 showError("Error: 出现错误！<br/>" + err);
             }).then(data => {
