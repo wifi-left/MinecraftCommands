@@ -1,0 +1,1 @@
+githubmd ".\pages" "*.md" "markdownlist.json"
