@@ -1,1 +1,1 @@
-githubmd ".\pages" "*.md" "markdownlist.json"
+githubmd "F:\Websites\MinecraftCommands\pages" "*.md" "markdownlist.json"

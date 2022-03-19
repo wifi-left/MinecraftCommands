@@ -23,7 +23,7 @@ a:active, a:hover {
 
 img {
     background-color: rgba(0, 0, 0, 0);
-    border: 1px solid rgb(108, 216, 171);
+    /* border: 1px solid rgb(108, 216, 171); */
 }
 
 code {
@@ -35,7 +35,10 @@ code {
 
 pre {
     border: 2px solid rgb(57, 148, 15);
-    background-color: rgb(145, 229, 194);
+}
+
+.hljs {
+    background-color: rgb(48 42 42);
 }
 
 span {
@@ -47,7 +50,7 @@ span {
     color: rgb(108, 216, 171);
     background-color: rgb(27, 27, 27);
     padding: 4px 4px 4px 4px;
-    line-height:34px;
+    line-height: 34px;
     font-family: 'Consolas';
 }
 
@@ -79,10 +82,10 @@ input {
     width: calc(100% - 4em);
 }
 
-.hljs-number{
-    color:rgb(252, 160, 22);
+.hljs-number {
+    color: rgb(252, 160, 22);
 }
 
-#bigcontent{
+#bigcontent {
     background-color: #333;
 }

@@ -9,7 +9,7 @@
     <title id="title">Gamom Wiki - Welcome</title>
     <link rel="stylesheet" href="./system/res/css/markdown-all.css">
     <link rel="stylesheet" id="darkcss" href="./system/res/css/markdown-default.css">
-    <link rel="stylesheet" href="./system/res/js/highlight/vs.min.css">
+    <link rel="stylesheet" href="./system/res/js/highlight/styles/base16/github.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="./system/res/js/gquery.js"></script>
@@ -172,6 +172,10 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             user-select: none;
+            /* line-height: */
+            font-size:32px;
+            line-height:80px;
+            margin:0 0 0 0;
         }
 
         #icon {
@@ -267,6 +271,7 @@
             border-radius: 8px;
             position: relative;
             top: 8px;
+            overflow: hidden;
         }
 
         #ulfa li:hover {
@@ -282,6 +287,8 @@
             height: 100%;
             width: 100%;
             display: inline-block;
+            padding: 0 0 0 0;
+            line-height: 1px;
         }
 
         #ulfa a:hover,
@@ -482,6 +489,9 @@
 
 </body>
 <script>
+    const origin = location.origin + location.pathname;
+    // 获取当前url
+
     function GetLocationParam(param) {
         var request = {
             QueryString: function (val) {
@@ -524,13 +534,19 @@
         nowapage = nowapage.substr(0, nowapage.length - 5);
         ishtml = true;
     }
-    if(nowapage==null || nowapage=='') nowapage = "index";
+    if (nowapage == null || nowapage == '') nowapage = "index";
 
     var menuJson = "";
     var NowMenu = "";
     flushBackup();
     function transl(key) {
-        return key.replaceAll("#", "").replaceAll("*", "");
+        try {
+            return key.toString().replaceAll("#", "").replaceAll("*", "");
+
+        } catch (e) {
+            console.log(e);
+        }
+        return key;
     }
     function $GAWIKI$_search(key) {
         if (key === "") {
@@ -576,7 +592,7 @@
         document.getElementById("title").innerHTML = "Gamom Wiki - " + getname(page);
         gQuery('#textarea').fadeOut(500);
 
-        setTimeout(reloadContent,500);
+        setTimeout(reloadContent, 500);
 
         /*  */
     }
@@ -597,7 +613,9 @@
     function flushBackup() {
         var lasturlEle = document.getElementById("back-up");
         lasturlEle.innerHTML = WebsiteName;
-        lasturlEle.href = "?pg=index&ishtml=false";
+        lasturlEle.onclick = () => {
+            changePage("index.md");
+        }
         var toptipEle = document.getElementById("top-back");
 
         var arrs = nowapage.split("/");
@@ -713,7 +731,7 @@
     var converter = new showdown.Converter();
     function reloadContent() {
         try {
-            if(nowapage==null || nowapage=='') nowapage = "index";
+            if (nowapage == null || nowapage == '') nowapage = "index";
             fetch('./pages/' + nowapage + "" + (ishtml ? ".html" : ".md")).then(res => {
                 if (res.ok) {
                     return res.text();
@@ -763,7 +781,10 @@
         gQuery("#erbg").fadeIn();
         gQuery("#error-msg").html(msg);
     }
-
+    function changePageURL(URL) {
+        // console.log();
+        changePage(URL.substr(origin.length))
+    }
     function showCo(html) {
         gQuery("#textarea").html(html);
         var regDetectJs = /<script(.|\n)*?>(.|\n|\r\n)*?<\/script>/ig;
@@ -790,8 +811,47 @@
                 }
             }
         }
+        //blockquote
 
+        // var ele = eles[i];
+        try {
+            var links = document.querySelectorAll('#textarea a[href]');
+            links.forEach(link => {
+                // console.log("sss")
+
+                if (link.href != "" && link.href.substr(0, 1) != "#") {
+                    if (link.href.substr(0, origin.length) == origin) {
+                        // 如果是内链
+                        link.setAttribute("url", link.href);
+                        link.href = origin+"?pg="+link.href.substr(origin.length);
+                        link.addEventListener('click', e => {
+                            changePageURL(link.getAttribute("url"))
+                            e.preventDefault();
+                            // 阻止默认方式打开链接
+                        });
+                    } else {
+                        link.target = "_blank"
+                    }// 让他新标签打开
+
+                } else {
+                }
+
+            });
+        } catch (e) {
+            console.log(e)
+        }
+        var imgs = document.querySelectorAll('#textarea img[src]');
+        imgs.forEach(img => {
+            if (img.src.substr(0, origin.length) == origin) {
+                // console.log(img.src)
+                img.src = "./pages/" + img.src.substr(origin.length);
+            }
+        });
     }
+    // var eles = document.getElementsByTagName("img");
+
+
+
     try {
         // document.addEventListener('gesturestart', function(event) {
         //     event.preventDefault()
